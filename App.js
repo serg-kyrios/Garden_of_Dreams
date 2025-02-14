@@ -1,37 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import MaskedView from '@react-native-masked-view/masked-view';
-import { GradientText } from 'react-native-text-gradient';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import MyGardenScreen from './screens/MyGardenScreen'; // Друга сторінка
 
-export default function App() {
+const Stack = createStackNavigator();
+
+function HomeScreen({ navigation }) {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.rootScreen}>
-        <LinearGradient
-          colors={['#4c669f', '#98773BFF', '#6A194EFF']}
-          style={styles.rootScreen}
-        >
+        <LinearGradient colors={['#4c669f', '#98773BFF', '#6A194EFF']} style={styles.rootScreen}>
           <ImageBackground
             source={require('./assets/images/nico-wijaya-33463ADa_10-unsplash.jpg')}
             resizeMode="cover"
             style={styles.rootScreen}
             imageStyle={styles.backgroundImage}
           >
-             <View style={styles.centeredContainer}>
-              <View
-                style={styles.text}
-                locations={[0, 1]}
-                colors={['#FF512F', '#F09819']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              >
-                  <Text style={styles.text}>#Garden_of_Dreams</Text>
-               
-              
-            </View>
-           
+            <View style={styles.centeredContainer}>
+            
+              <Text style={styles.text}>#Garden_of_Dreams</Text>
+              {/* Кнопка для переходу на другу сторінку */}
+              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MyGarden')}>
+                <Text style={styles.buttonText}>Перейти в мій сад 🌿</Text>
+              </TouchableOpacity>
             </View>
           </ImageBackground>
           <StatusBar style="auto" />
@@ -41,33 +35,45 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="MyGarden" component={MyGardenScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
 const styles = StyleSheet.create({
-  rootScreen: {
-    flex: 1,
-  },
-  backgroundImage: {
-    opacity: 0.7,
-  },
+  rootScreen: { flex: 1 },
+  backgroundImage: { opacity: 0.7 },
   centeredContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  maskedContainer: {
-    height: 50, // Висота тексту (залежить від розміру шрифту)
-  },
   text: {
     fontSize: 35,
     fontWeight: 'bold',
     textAlign: 'center',
-    backgroundColor: 'transparent', // ВАЖЛИВО!
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowColor: '#FF512F',
+    color: '#fff',
+   //  textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowColor: '#E31621FF',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 10,
   },
-  gradientBackground: {
-    flex: 1,
-    width: '100%',
+  button: {
+    marginTop: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: '#FF512F',
+    borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
