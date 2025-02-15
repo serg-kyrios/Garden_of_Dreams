@@ -10,6 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { getTabOptions } from "./src/navigation/tabOptions"; // 🔥 Підключаємо
 import MyGardenScreen from "./src/screens/MyGardenScreen";
 import ImagePickerScreen from "./src/screens/ImagePickerScreen";
 
@@ -51,7 +52,8 @@ function HomeScreen({ navigation }) {
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Navigator screenOptions={({ route }) => getTabOptions(route)}>
+        {/* 🔥 Використовуємо опції */}
         <Tab.Screen
           name="Головна"
           component={HomeScreen}
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "#fff",
-    //  textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowColor: "#E31621FF",
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 10,

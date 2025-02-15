@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { launchCamera } from "react-native-image-picker";
-//import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CameraScreen({ navigation }) {
   const [photo, setPhoto] = useState(null);
