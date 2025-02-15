@@ -8,13 +8,14 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import MyGardenScreen from "./src/screens/MyGardenScreen"; // Друга сторінка
-import ImagePicker from "./src/screens/ImagePicker"; // Третя сторінка
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import MyGardenScreen from "./src/screens/MyGardenScreen";
+import ImagePickerScreen from "./src/screens/ImagePickerScreen";
 
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
+// **Головний екран**
 function HomeScreen({ navigation }) {
   return (
     <SafeAreaProvider>
@@ -31,10 +32,9 @@ function HomeScreen({ navigation }) {
           >
             <View style={styles.centeredContainer}>
               <Text style={styles.text}>#Garden_of_Dreams</Text>
-              {/* Кнопка для переходу на другу сторінку */}
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate("MyGarden")}
+                onPress={() => navigation.navigate("MyGarden")} // ✅ Виправлено
               >
                 <Text style={styles.buttonText}>Перейти в мій сад 🌿</Text>
               </TouchableOpacity>
@@ -47,14 +47,19 @@ function HomeScreen({ navigation }) {
   );
 }
 
+// **Основний додаток**
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="MyGarden" component={MyGardenScreen} />
-        <Stack.Screen name="ImagePicker" component={ImagePicker} />
-      </Stack.Navigator>
+      <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Screen
+          name="Головна"
+          component={HomeScreen}
+          options={{ tabBarStyle: { display: "none" } }} // ✅ Приховає вкладки
+        />
+        <Tab.Screen name="MyGarden" component={MyGardenScreen} />
+        <Tab.Screen name="Додати" component={ImagePickerScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }

@@ -1,4 +1,3 @@
-//
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -9,9 +8,9 @@ import {
   Alert,
 } from "react-native";
 import { launchCamera } from "react-native-image-picker";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+//import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function CameraScreen() {
+export default function CameraScreen({ navigation }) {
   const [photo, setPhoto] = useState(null);
 
   useEffect(() => {
