@@ -13,6 +13,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { getTabOptions } from "./src/navigation/tabOptions"; // 🔥 Підключаємо
 import MyGardenScreen from "./src/screens/MyGardenScreen";
 import ImagePickerScreen from "./src/screens/ImagePickerScreen";
+import NotesPageScreen from "./src/screens/NotesPageScreen";
+
 import colors from "./colors";
 import tabOptions from "./src/navigation/tabOptions";
 import { useCallback } from "react";
@@ -60,6 +62,7 @@ export default function App() {
         <Tab.Screen name="Головна" component={HomeScreen} />
         <Tab.Screen name="MyGarden" component={MyGardenScreen} />
         <Tab.Screen name="Додати" component={ImagePickerScreen} />
+        <Tab.Screen name="Замітки" component={NotesPageScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

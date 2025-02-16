@@ -35,8 +35,9 @@ export const getTabOptions = (route) => ({
       iconName = focused ? "leaf" : "leaf-outline";
     } else if (route.name === "Додати") {
       iconName = focused ? "camera" : "camera-outline";
+    } else if (route.name === "Замітки") {
+      iconName = focused ? "menu" : "menu-outline";
     }
-
     return <Ionicons name={iconName} size={size} color={color} />;
   },
   //tabBarStyle: route.name === "Головна" ? { display: "none" } : {}, // Приховати вкладки на HomeScreen

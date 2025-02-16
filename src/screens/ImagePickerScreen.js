@@ -18,6 +18,7 @@ export default function CameraScreen({ navigation }) {
   }, []);
 
   const takePhoto = async () => {
+    console.log("Фото зроблено");
     const options = {
       mediaType: "photo",
       quality: 0.8,
@@ -39,7 +40,9 @@ export default function CameraScreen({ navigation }) {
 
   const savePhoto = async (uri) => {
     try {
-      await AsyncStorage.setItem("savedPhoto", uri);
+      // await AsyncStorage.setItem("savedPhoto", uri);
+      await AsyncStorage.setItem("savedPhoto", JSON.stringify(uri));
+
       console.log("Фото збережено");
     } catch (error) {
       console.log("Помилка збереження фото:", error);
