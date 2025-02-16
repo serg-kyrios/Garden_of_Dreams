@@ -13,6 +13,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { getTabOptions } from "./src/navigation/tabOptions"; // 🔥 Підключаємо
 import MyGardenScreen from "./src/screens/MyGardenScreen";
 import ImagePickerScreen from "./src/screens/ImagePickerScreen";
+import colors from "./colors";
+import tabOptions from "./src/navigation/tabOptions";
 
 const Tab = createBottomTabNavigator();
 
@@ -41,7 +43,7 @@ function HomeScreen({ navigation }) {
               </TouchableOpacity>
             </View>
           </ImageBackground>
-          <StatusBar style="auto" />
+          <StatusBar style="white" />
         </LinearGradient>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -54,11 +56,7 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator screenOptions={({ route }) => getTabOptions(route)}>
         {/* 🔥 Використовуємо опції */}
-        <Tab.Screen
-          name="Головна"
-          component={HomeScreen}
-          options={{ tabBarStyle: { display: "none" } }} // ✅ Приховає вкладки
-        />
+        <Tab.Screen name="Головна" component={HomeScreen} />
         <Tab.Screen name="MyGarden" component={MyGardenScreen} />
         <Tab.Screen name="Додати" component={ImagePickerScreen} />
       </Tab.Navigator>
