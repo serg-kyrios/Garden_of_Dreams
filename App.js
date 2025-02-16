@@ -15,6 +15,7 @@ import MyGardenScreen from "./src/screens/MyGardenScreen";
 import ImagePickerScreen from "./src/screens/ImagePickerScreen";
 import colors from "./colors";
 import tabOptions from "./src/navigation/tabOptions";
+import { useCallback } from "react";
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +44,7 @@ function HomeScreen({ navigation }) {
               </TouchableOpacity>
             </View>
           </ImageBackground>
-          <StatusBar style="white" />
+          <StatusBar style="auto" translucent backgroundColor="transparent" />
         </LinearGradient>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -95,3 +96,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+// onLayout={onLayoutRootView}

@@ -4,11 +4,24 @@ import colors from "..//../colors";
 
 // 🔥 Експортуємо окремо tabOptions
 export const tabOptions = {
-  tabBarStyle: { height: 60 }, // Збільшення висоти
-  tabBarLabelStyle: { fontSize: 16 },
-  headerStyle: { backgroundColor: "#f4511e" },
-  headerTintColor: "#fff",
-  headerTitleStyle: { fontWeight: "bold" },
+  tabBarStyle: {
+    height: 60, // Збільшення висоти
+    backgroundColor: "#f4511e", // Фон меню
+  },
+  tabBarLabelStyle: { fontSize: 16, fontWeight: "bold" }, // Розмір і жирність тексту
+  tabBarActiveTintColor: "green", // Колір активного тексту
+  tabBarInactiveTintColor: "gray", // Колір неактивного тексту
+  headerStyle: { backgroundColor: "#f4511e" }, // Фон заголовка
+  headerTintColor: "#fff", // Колір тексту заголовка
+  headerTitleAlign: "center", // Вирівнювання заголовка
+  fontFamily: "InterBlack",
+  headerTitleStyle: {
+    fontWeight: "bold",
+    fontSize: 34,
+    color: "#086312FF",
+    fontFamily: "InterBlack",
+    fontFamily: "RobotoItalic",
+  }, // Стиль заголовка
 };
 
 // 🔥 Функція для отримання опцій вкладок
@@ -26,7 +39,7 @@ export const getTabOptions = (route) => ({
 
     return <Ionicons name={iconName} size={size} color={color} />;
   },
-  tabBarStyle: route.name === "Головна" ? { display: "none" } : {}, // Приховати вкладки на HomeScreen
+  //tabBarStyle: route.name === "Головна" ? { display: "none" } : {}, // Приховати вкладки на HomeScreen
   ...tabOptions, // 🔥 Додаємо загальні опції
 });
 
