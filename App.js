@@ -61,8 +61,8 @@ export default function App() {
         {/* 🔥 Використовуємо опції */}
         <Tab.Screen name="Головна" component={HomeScreen} />
         <Tab.Screen name="MyGarden" component={MyGardenScreen} />
-        <Tab.Screen name="Додати" component={ImagePickerScreen} />
-        <Tab.Screen name="Замітки" component={NotesPageScreen} />
+        <Tab.Screen name="Додати" component={NotesPageScreen} />
+        <Tab.Screen name="Замітки" component={ImagePickerScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

@@ -1,115 +1,61 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { View, Button, Image, StyleSheet } from "react-native";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
-import { launchCamera } from "react-native-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+  launchCameraAsync,
+  useCameraPermissions,
+  PermissionStatus,
+} from "expo-image-picker";
 
-export default function CameraScreen({ navigation }) {
-  const [photo, setPhoto] = useState(null);
+export default function ImagePickerScreen({ setSelectedImage }) {
+  const [pickedImage, setPickedImage] = useState(null);
+  const [cameraPermission, requestPermission] = useCameraPermissions();
 
-  useEffect(() => {
-    loadSavedPhoto();
-  }, []);
+  async function verifyPermissions() {
+    if (cameraPermission.status === PermissionStatus.UNDETERMINED) {
+      const permissionResponse = await requestPermission();
+      return permissionResponse.granted;
+    }
+    if (cameraPermission.status === PermissionStatus.DENIED) {
+      Alert.alert("Недостатньо прав!", "Дайте дозвіл на використання камери.");
+      return false;
+    }
+    return true;
+  }
 
-  const takePhoto = async () => {
-    console.log("Фото зроблено");
-    const options = {
-      mediaType: "photo",
-      quality: 0.8,
-      saveToPhotos: true,
-    };
+  async function takeImageHandler() {
+    const hasPermission = await verifyPermissions();
+    if (!hasPermission) return;
 
-    launchCamera(options, async (response) => {
-      if (response.didCancel) {
-        console.log("Користувач скасував зйомку");
-      } else if (response.errorMessage) {
-        Alert.alert("Помилка", response.errorMessage);
-      } else {
-        const uri = response.assets[0].uri;
-        setPhoto(uri);
-        await savePhoto(uri);
-      }
+    const image = await launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.5,
     });
-  };
 
-  const savePhoto = async (uri) => {
-    try {
-      // await AsyncStorage.setItem("savedPhoto", uri);
-      await AsyncStorage.setItem("savedPhoto", JSON.stringify(uri));
-
-      console.log("Фото збережено");
-    } catch (error) {
-      console.log("Помилка збереження фото:", error);
+    if (!image.canceled) {
+      setPickedImage(image.assets[0].uri);
+      setSelectedImage(image.assets[0].uri);
     }
-  };
-
-  const loadSavedPhoto = async () => {
-    try {
-      const savedUri = await AsyncStorage.getItem("savedPhoto");
-      if (savedUri) {
-        setPhoto(savedUri);
-      }
-    } catch (error) {
-      console.log("Помилка завантаження фото:", error);
-    }
-  };
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>📸 Додати фото рослини</Text>
-
-      {photo ? (
-        <Image source={{ uri: photo }} style={styles.image} />
-      ) : (
-        <Text style={styles.placeholder}>Фото ще немає</Text>
+      <Button title="📸 Додати фото" onPress={takeImageHandler} />
+      {pickedImage && (
+        <Image source={{ uri: pickedImage }} style={styles.imagePreview} />
       )}
-
-      <TouchableOpacity style={styles.button} onPress={takePhoto}>
-        <Text style={styles.buttonText}>📷 Зробити фото</Text>
-      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#E3F2FD",
+    marginVertical: 10,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#2E7D32",
-    marginBottom: 20,
-  },
-  image: {
-    width: 300,
-    height: 300,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  placeholder: {
-    fontSize: 16,
-    color: "#555",
-    marginBottom: 20,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: "#4CAF50",
-    borderRadius: 10,
-  },
-  buttonText: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
+  imagePreview: {
+    width: 100,
+    height: 100,
+    borderRadius: 5,
+    marginTop: 10,
   },
 });

@@ -6,14 +6,25 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useEffect } from "react";
+import ImagePickerScreen from "./ImagePickerScreen";
 
-export default function NotesPageScreen({ navigation }) {
+export default function NotesPageScreen() {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // Функція для додавання замітки
+  const addNote = () => {
+    if (newNote.trim() !== "" || selectedImage) {
+      const newEntry = { text: newNote, image: selectedImage };
+      setNotes([...notes, newEntry]);
+      setNewNote("");
+      setSelectedImage(null);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -23,24 +34,29 @@ export default function NotesPageScreen({ navigation }) {
         value={newNote}
         onChangeText={setNewNote}
       />
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => {
-          if (newNote.trim() !== "") {
-            setNotes([...notes, newNote]);
-            setNewNote("");
-          }
-        }}
-      >
+
+      {/* Виклик вибору фото */}
+      <ImagePickerScreen setSelectedImage={setSelectedImage} />
+
+      {/* Попередній перегляд фото перед додаванням */}
+      {selectedImage && (
+        <Image source={{ uri: selectedImage }} style={styles.previewImage} />
+      )}
+
+      <TouchableOpacity style={styles.addButton} onPress={addNote}>
         <Text style={styles.addButtonText}>Додати</Text>
       </TouchableOpacity>
+
       <FlatList
         data={notes}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.noteItem}>
             <MaterialIcons name="note" size={24} color="green" />
-            <Text style={styles.noteText}>{item}</Text>
+            <Text style={styles.noteText}>{item.text}</Text>
+            {item.image && (
+              <Image source={{ uri: item.image }} style={styles.noteImage} />
+            )}
           </View>
         )}
       />
@@ -48,47 +64,56 @@ export default function NotesPageScreen({ navigation }) {
   );
 }
 
+// Стилі
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f5f5f5",
-    alignContent: "center",
-    justifyContent: "center",
+    backgroundColor: "#E3F2FD",
   },
   input: {
-    height: 40,
-    borderColor: "gray",
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
+    borderColor: "#aaa",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    backgroundColor: "#fff",
   },
   addButton: {
-    backgroundColor: "#2E7D32",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    backgroundColor: "#4CAF50",
+    padding: 12,
+    borderRadius: 5,
     alignItems: "center",
-    justifyContent: "center",
-    width: "60%",
+    marginBottom: 10,
   },
   addButtonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   noteItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    padding: 10,
+    backgroundColor: "#fff",
+    marginVertical: 5,
+    borderRadius: 5,
   },
   noteText: {
     flex: 1,
     fontSize: 16,
-    marginLeft: 12,
+    marginLeft: 10,
   },
-  deleteButton: {
-    marginLeft: 12,
+  noteImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+  },
+  previewImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginVertical: 10,
   },
 });
