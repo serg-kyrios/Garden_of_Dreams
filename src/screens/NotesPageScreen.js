@@ -7,11 +7,19 @@ import {
   FlatList,
   StyleSheet,
   Image,
+  Button,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import ImagePickerScreen from "./ImagePickerScreen";
+import {
+  launchCameraAsync,
+  useCameraPermissions,
+  PermissionStatus,
+} from "expo-image-picker";
+import * as ImagePicker from "expo-image-picker";
 
-export default function NotesPageScreen() {
+//import ImagePickerScreen from "./ImagePickerScreen";
+//Частина логіки <= ImagePickerScreen
+function NotesPageScreen() {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -63,7 +71,48 @@ export default function NotesPageScreen() {
     </View>
   );
 }
+export default NotesPageScreen;
 
+function ImagePickerScreen({ setSelectedImage }) {
+  const [pickedImage, setPickedImage] = useState(null);
+  const [cameraPermission, requestPermission] = useCameraPermissions();
+
+  async function verifyPermissions() {
+    if (cameraPermission.status === PermissionStatus.UNDETERMINED) {
+      const permissionResponse = await requestPermission();
+      return permissionResponse.granted;
+    }
+    if (cameraPermission.status === PermissionStatus.DENIED) {
+      Alert.alert("Недостатньо прав!", "Дайте дозвіл на використання камери.");
+      return false;
+    }
+    return true;
+  }
+
+  async function takeImageHandler() {
+    const hasPermission = await verifyPermissions();
+    if (!hasPermission) return;
+
+    const image = await launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.5,
+    });
+
+    if (!image.canceled) {
+      setPickedImage(image.assets[0].uri);
+      setSelectedImage(image.assets[0].uri);
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+      <Button title="📸 Додати фото" onPress={takeImageHandler} />
+      {pickedImage && (
+        <Image source={{ uri: pickedImage }} style={styles.imagePreview} />
+      )}
+    </View>
+  );
+}
 // Стилі
 const styles = StyleSheet.create({
   container: {
