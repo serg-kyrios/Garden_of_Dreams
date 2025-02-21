@@ -1,132 +1,48 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
-  StyleSheet,
+  Text,
   Image,
-  Button,
+  StyleSheet,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import {
-  launchCameraAsync,
-  useCameraPermissions,
-  PermissionStatus,
-} from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
+import OutlineButton from "../../component/UI/OutlineButton";
+import { CameraView } from "expo-camera";
 
-//import ImagePickerScreen from "./ImagePickerScreen";
-//Частина логіки <= ImagePickerScreen
-function NotesPageScreen() {
-  const [notes, setNotes] = useState([]);
+export default function NotesPageScreen({ navigation }) {
   const [newNote, setNewNote] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [image, setImage] = useState(null);
 
-  // Функція для додавання замітки
-  const addNote = () => {
-    if (newNote.trim() !== "" || selectedImage) {
-      const newEntry = { text: newNote, image: selectedImage };
-      setNotes([...notes, newEntry]);
-      setNewNote("");
-      setSelectedImage(null);
-    }
+  // Функція вибору зображення
+  const pickImage = async () => {
+    // Додавання нотатки
   };
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Нова замітка"
-        value={newNote}
-        onChangeText={setNewNote}
-      />
-
-      {/* Виклик вибору фото */}
-      <ImagePickerScreen setSelectedImage={setSelectedImage} />
-
-      {/* Попередній перегляд фото перед додаванням */}
-      {selectedImage && (
-        <Image source={{ uri: selectedImage }} style={styles.previewImage} />
-      )}
-
-      <TouchableOpacity style={styles.addButton} onPress={addNote}>
-        <Text style={styles.addButtonText}>Додати</Text>
-      </TouchableOpacity>
-
-      <FlatList
-        data={notes}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.noteItem}>
-            <MaterialIcons name="note" size={24} color="green" />
-            <Text style={styles.noteText}>{item.text}</Text>
-            {item.image && (
-              <Image source={{ uri: item.image }} style={styles.noteImage} />
-            )}
-          </View>
-        )}
-      />
+      <OutlineButton icon={"camera"}>Take Image</OutlineButton>
     </View>
   );
 }
-export default NotesPageScreen;
 
-function ImagePickerScreen({ setSelectedImage }) {
-  const [pickedImage, setPickedImage] = useState(null);
-  const [cameraPermission, requestPermission] = useCameraPermissions();
-
-  async function verifyPermissions() {
-    if (cameraPermission.status === PermissionStatus.UNDETERMINED) {
-      const permissionResponse = await requestPermission();
-      return permissionResponse.granted;
-    }
-    if (cameraPermission.status === PermissionStatus.DENIED) {
-      Alert.alert("Недостатньо прав!", "Дайте дозвіл на використання камери.");
-      return false;
-    }
-    return true;
-  }
-
-  async function takeImageHandler() {
-    const hasPermission = await verifyPermissions();
-    if (!hasPermission) return;
-
-    const image = await launchCameraAsync({
-      allowsEditing: true,
-      quality: 0.5,
-    });
-
-    if (!image.canceled) {
-      setPickedImage(image.assets[0].uri);
-      setSelectedImage(image.assets[0].uri);
-    }
-  }
-
-  return (
-    <View style={styles.container}>
-      <Button title="📸 Додати фото" onPress={takeImageHandler} />
-      {pickedImage && (
-        <Image source={{ uri: pickedImage }} style={styles.imagePreview} />
-      )}
-    </View>
-  );
-}
-// Стилі
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: "#E3F2FD",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#aaa",
+  input: { borderBottomWidth: 1, padding: 8, marginBottom: 10, fontSize: 16 },
+  imageButton: {
+    backgroundColor: "#FFA726",
     padding: 10,
     borderRadius: 5,
+    alignItems: "center",
     marginBottom: 10,
-    backgroundColor: "#fff",
   },
   addButton: {
     backgroundColor: "#4CAF50",
@@ -135,34 +51,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  addButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  noteItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "#fff",
-    marginVertical: 5,
-    borderRadius: 5,
-  },
-  noteText: {
-    flex: 1,
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  noteImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
-  },
-  previewImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 5,
+  buttonText: { color: "#fff", fontWeight: "bold" },
+  preview: {
+    width: 100,
+    height: 100,
     alignSelf: "center",
-    marginVertical: 10,
+    marginBottom: 10,
+    borderRadius: 10,
   },
 });
