@@ -1,5 +1,3 @@
-//       <Button title="📸 Додати фото" onPress={takeImageHandler} />
-//
 import React, { useState, useEffect } from "react";
 import {
   TextInput,
@@ -9,67 +7,120 @@ import {
   View,
   ScrollView,
   Alert,
+  Button,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import OutlineButton from "../../component/UI/OutlineButton";
 
 export default function ImagePickerScreen({ navigation }) {
   const [image, setImage] = useState(null);
+  const [title, setTitle] = useState("");
+  const [savedNotes, setSavedNotes] = useState([]);
+  const [hasPermission, setHasPermission] = useState(null);
 
-  // Попросити дозволи при запуску
+  // Завантажуємо збережені дані при старті
   useEffect(() => {
-    (async () => {
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission Denied",
-          "We need camera permissions to make this work!"
-        );
+    async function loadNotes() {
+      const storedNotes = await AsyncStorage.getItem("notes");
+      if (storedNotes) {
+        setSavedNotes(JSON.parse(storedNotes));
       }
-    })();
+    }
+    loadNotes();
   }, []);
 
+  // Перевіряємо дозвіл на використання камери
+  useEffect(() => {
+    async function checkPermissions() {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    }
+    checkPermissions();
+  }, []);
+
+  // Обробник для фотографії
   async function takeImageHandler() {
+    if (!hasPermission) {
+      Alert.alert(
+        "Доступ заборонено",
+        "Надайте доступ до камери в налаштуваннях."
+      );
+      return;
+    }
+
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
 
-    console.log(result); // Лог для перевірки
-
     if (!result.canceled && result.assets?.length > 0) {
       setImage(result.assets[0].uri);
     }
   }
 
+  // Функція для збереження нотатки
+  async function saveNoteHandler() {
+    if (!title.trim() && !image) {
+      Alert.alert("Помилка", "Додайте текст або зображення!");
+      return;
+    }
+
+    const newNote = { title, image };
+    const updatedNotes = [newNote, ...savedNotes];
+
+    setSavedNotes(updatedNotes);
+    await AsyncStorage.setItem("notes", JSON.stringify(updatedNotes));
+
+    // Очищаємо форму
+    setTitle("");
+    setImage(null);
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView>
-        <TextInput style={styles.input} placeholder="Title" />
+        <TextInput
+          style={styles.input}
+          placeholder="Title"
+          value={title}
+          onChangeText={setTitle}
+        />
         <OutlineButton icon={"camera"} onPress={takeImageHandler}>
           Take Image
         </OutlineButton>
 
         {image && <Image source={{ uri: image }} style={styles.preview} />}
+
+        <Button title="Зберегти нотатку" onPress={saveNoteHandler} />
+
+        <Text style={styles.sectionTitle}>Збережені нотатки:</Text>
+        {savedNotes.map((note, index) => (
+          <View key={index} style={styles.noteItem}>
+            {note.image && (
+              <Image source={{ uri: note.image }} style={styles.noteImage} />
+            )}
+            <Text style={styles.noteText}>{note.title}</Text>
+          </View>
+        ))}
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  containerView: {
-    flex: 1,
-    backgroundColor: "#76ABD1FF",
-  },
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: "#E3F2FD",
-    alignItems: "center",
-    justifyContent: "center",
   },
-  input: { borderBottomWidth: 1, padding: 8, marginBottom: 10, fontSize: 16 },
+  input: {
+    borderBottomWidth: 1,
+    padding: 8,
+    marginBottom: 10,
+    fontSize: 16,
+  },
   preview: {
     width: 200,
     height: 200,
@@ -77,4 +128,32 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 10,
   },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
+  noteItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+  },
+  noteImage: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+    borderRadius: 5,
+  },
+  noteText: {
+    fontSize: 16,
+  },
 });
+
+//       <Button title="📸 Додати фото" onPress={takeImageHandler} />
+//
