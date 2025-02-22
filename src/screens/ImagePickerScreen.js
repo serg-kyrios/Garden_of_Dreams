@@ -95,7 +95,7 @@ export default function ImagePickerScreen({ navigation }) {
 
         {image && <Image source={{ uri: image }} style={styles.preview} />}
         <OutlineButton icon={"document-text-outline"} onPress={saveNoteHandler}>
-          Зберегти вашу нотатку
+          Зберегти нотатку
         </OutlineButton>
         {/* <Button title="" onPress={saveNoteHandler} /> */}
 

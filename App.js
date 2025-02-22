@@ -15,6 +15,7 @@ import MyGardenScreen from "./src/screens/MyGardenScreen";
 import ImagePickerScreen from "./src/screens/ImagePickerScreen";
 import NotesPageScreen from "./src/screens/NotesPageScreen";
 import SavedNotesScreen from "./src/screens/SavedNotesScreen";
+import CalendarPageScreen from "./src/screens/CalendarPageScreen";
 
 import colors from "./colors";
 import tabOptions from "./src/navigation/tabOptions";
@@ -64,7 +65,8 @@ export default function App() {
         <Tab.Screen name="MyGarden" component={MyGardenScreen} />
         {/* <Tab.Screen name="Замітки"  component={NotesPageScreen} /> */}
         <Tab.Screen name="Додати" component={ImagePickerScreen} />
-        <Tab.Screen name="Замітки" component={SavedNotesScreen} />
+        {/* <Tab.Screen name="Замітки" component={SavedNotesScreen} /> */}
+        <Tab.Screen name="Календар" component={CalendarPageScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

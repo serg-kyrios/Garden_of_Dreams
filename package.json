@@ -12,13 +12,16 @@
     "@expo-google-fonts/inter": "^0.2.3",
     "@expo-google-fonts/roboto": "^0.2.3",
     "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-community/datetimepicker": "8.2.0",
     "@react-native-masked-view/masked-view": "^0.3.2",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
     "expo": "^52.0.0",
+    "expo-calendar": "~14.0.6",
     "expo-camera": "~16.0.16",
     "expo-font": "~13.0.3",
+    "expo-image-picker": "~16.0.6",
     "expo-linear-gradient": "~14.0.2",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
@@ -26,12 +29,11 @@
     "react-native-gradient-texts": "^0.1.0",
     "react-native-image-picker": "^8.0.0",
     "react-native-linear-gradient": "^2.8.3",
+    "react-native-material-datetime-picker": "^0.2.1",
     "react-native-safe-area-context": "^5.2.0",
     "react-native-screens": "^4.6.0",
     "react-native-svg": "^15.11.1",
-    "react-native-text-gradient": "^0.1.7",
-    "expo-image-picker": "~16.0.6",
-    "expo-calendar": "~14.0.6"
+    "react-native-text-gradient": "^0.1.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
