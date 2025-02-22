@@ -9,6 +9,8 @@ import {
   Alert,
   Button,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // Додали імпорт
+import { colors } from "../../colors";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import OutlineButton from "../../component/UI/OutlineButton";
@@ -88,16 +90,24 @@ export default function ImagePickerScreen({ navigation }) {
           onChangeText={setTitle}
         />
         <OutlineButton icon={"camera"} onPress={takeImageHandler}>
-          Take Image
+          Зробити Фотографію
         </OutlineButton>
 
         {image && <Image source={{ uri: image }} style={styles.preview} />}
-
-        <Button title="Зберегти нотатку" onPress={saveNoteHandler} />
+        <OutlineButton icon={"document-text-outline"} onPress={saveNoteHandler}>
+          Зберегти вашу нотатку
+        </OutlineButton>
+        {/* <Button title="" onPress={saveNoteHandler} /> */}
 
         <Text style={styles.sectionTitle}>Збережені нотатки:</Text>
         {savedNotes.map((note, index) => (
           <View key={index} style={styles.noteItem}>
+            <Ionicons
+              name="document-text-outline"
+              size={24}
+              color={colors.primary50}
+              style={styles.noteIcon}
+            />
             {note.image && (
               <Image source={{ uri: note.image }} style={styles.noteImage} />
             )}
@@ -120,6 +130,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 10,
     fontSize: 16,
+    borderColor: colors.primary15,
   },
   preview: {
     width: 200,
@@ -143,6 +154,9 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 1 },
+  },
+  noteIcon: {
+    marginRight: 10,
   },
   noteImage: {
     width: 50,

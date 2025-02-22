@@ -38,6 +38,6 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.7,
   },
-  icon: { marginRight: 6 },
-  text: { color: colors.primary50 },
+  icon: { marginRight: 1 },
+  text: { color: colors.primary50, flex: 1, textAlign: "center" },
 });
