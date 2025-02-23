@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import * as Calendar from "expo-calendar";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CalendarPageScreen() {
   const [calendarId, setCalendarId] = useState(null);
@@ -17,7 +18,35 @@ export default function CalendarPageScreen() {
   const [eventNotes, setEventNotes] = useState(""); // Введення нотаток
   const [date, setDate] = useState(new Date()); // Дата події
   const [showPicker, setShowPicker] = useState(false);
+  // Збереження замітки:
+  async function saveNote(note) {
+    try {
+      const existingNotes = await AsyncStorage.getItem("notes");
+      const notes = existingNotes ? JSON.parse(existingNotes) : [];
+      notes.push(note);
+      await AsyncStorage.setItem("notes", JSON.stringify(notes));
+    } catch (error) {
+      console.error("Помилка збереження:", error);
+    }
+  }
+  // Отримання всіх заміток:
 
+  async function getNotes() {
+    const storedNotes = await AsyncStorage.getItem("notes");
+    return storedNotes ? JSON.parse(storedNotes) : [];
+  }
+  console.log(getNotes());
+  // Використання:
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    async function loadNotes() {
+      const savedNotes = await getNotes();
+      setNotes(savedNotes);
+    }
+    loadNotes();
+  }, []);
+  //////
   useEffect(() => {
     (async () => {
       const { status } = await Calendar.requestCalendarPermissionsAsync();
@@ -152,9 +181,13 @@ export default function CalendarPageScreen() {
       {showPicker && (
         <DateTimePicker
           value={date}
-          mode="datetime"
+          mode="date" // або "time"
           display="default"
-          onChange={onDateChange}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || date;
+            setShow(false); // приховуємо пікер після вибору
+            setDate(currentDate);
+          }}
         />
       )}
 
